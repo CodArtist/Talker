@@ -1,0 +1,41 @@
+.body{
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    color: black;
+    background-color: green;
+}
+.chatContainer{
+    width: 20%;
+    height: auto;
+    padding-bottom: 50px;
+    background-color: skyblue;
+    border-radius: 20px;
+    color: #87ceeb;
+    margin: auto;
+    white-space: nowrap;
+    /* overflow: auto; */
+    text-overflow: clip;
+
+    
+    
+
+}
+.chatBox{
+    align-items: center;
+    text-align: center;
+    background-color: blue;
+
+    /* padding-left: 50%; */
+    
+}
+.text{
+    color:white; 
+    border:1px dashed green;
+    /* overflow-wrap: break-word; */
+    word-wrap: break-word;
+}
+
+/* .inputBox{
+
+} */
