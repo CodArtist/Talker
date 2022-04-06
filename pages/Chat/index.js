@@ -137,7 +137,7 @@ export default function Chat() {
                return(
                 <div key={e.path} className='from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg items-start drop-shadow-xl whitespace-pre-wrap' >
                 <div className='text-white mx-10 font-sans my-3 whitespace-pre-wrap break-words'>
-                  <a target={'_blank'} href={`${ServerURL}/download?path=${e.path}`}>{e.file_name}</a>
+                  <a target={'_blank'} rel={'noreferrer'} href={`${ServerURL}/download?path=${e.path}`}>{e.file_name}</a>
                 </div>
                 </div>
            
