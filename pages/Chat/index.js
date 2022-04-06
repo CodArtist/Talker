@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react'
 const { io } = require("socket.io-client");
-import styles from '../chat.module.css'
-import { useSession, signIn, signOut, getSession } from "next-auth/react"
+import axios from "axios";
+import FormData from 'form-data'
+
+
+import { getSession } from "next-auth/react"
 import Router from 'next/router'
 
+const ServerURL = "https://talker-server.herokuapp.com";
 
-
-const socket = io.connect("https://talker-server.herokuapp.com");
+const socket = io.connect(ServerURL);
 export default function Chat() {
+ 
     const [message, setmessage] = useState("")
     const [chats, setchats] = useState([])
     const [location, setlocation] = useState("")
-    
+    const [file, setfile] = useState(null)
 
     var options = {
         enableHighAccuracy: true,
@@ -31,8 +35,34 @@ export default function Chat() {
         console.warn(`ERROR(${err.code}): ${err.message}`);
       }
    
+     function handleUpload(e) {
       
-    
+      
+        let formData = new FormData();
+      
+        //Adding files to the formdata
+        formData.append("file", file);
+        formData.append("room_id", location);
+        for (var key of formData.entries()) {
+          console.log(key[0] + ', ' + key[1])
+        }
+        axios({
+          // Endpoint to send files
+          url: `${ServerURL}/upload`,
+          method: "POST",
+          // Attaching the form data
+          data: formData,
+        })
+          .then((res) => {
+            console.log(res.data.path)
+            socket.emit("sendFile",{filePath:res.data.path,location:location,file_name:res.data.file_name})
+           }) // Handle the response from backend here
+          .catch((err) => {
+            console.log(err);
+           }); // Catch errors if any
+      }
+
+     
   
       useEffect(() => {
         const securePage = async ()=>{
@@ -51,14 +81,9 @@ export default function Chat() {
           .query({ name: "geolocation" })
           .then(function (result) {
             if (result.state === "granted") {
-              console.log(result.state);
-              // alert("granted")
-              //If granted then you can directly call your function here
-             console.log("ddfdfd")
+         
              navigator.geolocation.getCurrentPosition(success);
             } else if (result.state === "prompt") {
-              console.log(result.state);
-              // alert("prompt")
               navigator.geolocation.getCurrentPosition(success, errors, options);
             } else if (result.state === "denied") {
               
@@ -84,6 +109,13 @@ export default function Chat() {
           console.log(chats)
           
       })
+      socket.on("sendFile",data=>{
+        
+        setchats([...chats,{path:data.path,file_name:data.file_name}])
+        console.log(chats)
+        
+    })
+ 
     })
     
   
@@ -94,14 +126,25 @@ export default function Chat() {
       <div className='flex flex-col h-3/5 bg-white w-screen overflow-scroll overflow-x-hidden items-center space-y-6 '>
        {
            chats.map((e)=>{
-      
+              if(typeof e === "string")
                return(
                <div key={e} className='from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg items-start drop-shadow-xl whitespace-pre-wrap' >
                    <div className='text-white mx-10 font-sans my-3 whitespace-pre-wrap break-words'>{e}
                    </div>
                    </div>
                )
+
+               return(
+                <div key={e.path} className='from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg items-start drop-shadow-xl whitespace-pre-wrap' >
+                <div className='text-white mx-10 font-sans my-3 whitespace-pre-wrap break-words'>
+                  <a target={'_blank'} href={`${ServerURL}/download?path=${e.path}`}>{e.file_name}</a>
+                </div>
+                </div>
+           
+               )
            })
+
+           
       
        }
        </div>
@@ -117,7 +160,17 @@ export default function Chat() {
       
       }}/>
       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 my-3' type='submit'>Send</button>
-      </form>
+    
+
+     </form>
+     <form>
+     <input className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 my-3'  type="file"
+        //To select multiple files
+          onChange={(e) => {setfile(e.target.files[0])
+          console.log(e.target.files[0])}}/>
+</form>
+<button onClick={(e) =>handleUpload(e)}
+        >Send Files</button>
       </div>
 
   )
