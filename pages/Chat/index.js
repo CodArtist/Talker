@@ -55,7 +55,7 @@ export default function Chat() {
         })
           .then((res) => {
             console.log(res.data.path)
-            socket.emit("sendFile",{filePath:res.data.path,location:location,file_name:res.data.file_name})
+            socket.emit("chat",{message:{path:res.data.path,file_name:res.data.file_name},location:location})
            }) // Handle the response from backend here
           .catch((err) => {
             console.log(err);
@@ -103,18 +103,18 @@ export default function Chat() {
   
     useEffect(() => {
       socket.on("chat",data=>{
-          console.log(data)
+   
+        if(Array.isArray(data))
+       { setchats([...chats,...data])
+       }
+         else{ console.log(data)
           console.log(location)
           setchats([...chats,data])
           console.log(chats)
+         }
           
       })
-      socket.on("sendFile",data=>{
-        
-        setchats([...chats,{path:data.path,file_name:data.file_name}])
-        console.log(chats)
-        
-    })
+
  
     })
     
