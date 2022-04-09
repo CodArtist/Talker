@@ -221,11 +221,13 @@ export default function Chat() {
 
                return(
                 <div key={e.path} className='flex flex-col from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg drop-shadow-xl whitespace-pre-wrap p-5 ' >
-                   <div className='flex flex-row space-x-4'>
+                     <div className='flex flex-row space-x-4'>
                    <div className=' bg-white rounded-full h-11 w-11 overflow-hidden'>
                      <img src={`https://avatars.dicebear.com/api/avataaars/${e.userName}.svg`}/>
                    </div>
+                  <div className='  w-1/2 overflow-hidden overflow-ellipsis'>
                    <a className=' font-bold text-white'>{e.userName}</a>
+                   </div>
                    </div>
                 <div className='flex flex-row justify-between'>
                 <div className='text-white w-1/2 font-sans my-3 whitespace-pre-wrap break-words'>
