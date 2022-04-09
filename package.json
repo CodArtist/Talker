@@ -11,12 +11,15 @@
   "dependencies": {
     "axios": "^0.26.1",
     "form-data": "^4.0.0",
+    "mdb-react-ui-kit": "^3.0.0",
     "next": "12.1.4",
     "next-auth": "^4.3.1",
     "react": "18.0.0",
     "react-device-detect": "^2.1.2",
     "react-dom": "18.0.0",
     "react-icons": "^4.3.1",
+    "react-loading-skeleton": "^3.0.3",
+    "react-progressbar": "^15.4.1",
     "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
