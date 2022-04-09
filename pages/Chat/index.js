@@ -153,8 +153,9 @@ export default function Chat() {
       } else {
         alert("Sorry your browser/device doesn't support location feature");
       }
-      if(location!='')
+      if(location!=''){
       socket.emit("join",{location:location})
+      }
       
   }, [location])
   useEffect(() => {
@@ -208,7 +209,9 @@ export default function Chat() {
                    <div className=' bg-white rounded-full h-11 w-11 overflow-hidden'>
                      <img src={`https://avatars.dicebear.com/api/avataaars/${e.userName}.svg`}/>
                    </div>
+                  <div className='  w-1/2 overflow-hidden overflow-ellipsis'>
                    <a className=' font-bold text-white'>{e.userName}</a>
+                   </div>
                    </div>
 
                    <div className='text-white mx-10 font-sans my-3 whitespace-pre-wrap break-words'>{e.message}
