@@ -47,7 +47,6 @@ export default function Chat() {
         var crd = pos.coords;
         setlocation((crd.latitude).toString()+'_'+(crd.longitude).toString())
         setTimeout(function () {
-          setlocationLoading(false)
           setlocationPermission(true)
         }, 2000);
        
@@ -67,10 +66,7 @@ export default function Chat() {
       const onUploadProgress = (event) => {
         const percentage = Math.round((100 * event.loaded) / event.total);
         console.log(percentage);
-        // setTimeout(()=>{
-        //   setUploadPercent(percentage)
-        // },5000)
-        
+    
         setUploadPercent(percentage)
       };
         let formData = new FormData();
@@ -94,7 +90,7 @@ export default function Chat() {
             setTimeout(()=>{
               setfileUploading(false)
               setUploadPercent(0)
-            },2000)
+            },1000)
             
           }) // Handle the response from backend here
           .catch((err) => {
@@ -115,7 +111,6 @@ export default function Chat() {
         }, [])
 
   useEffect(() => {
-    console.log("useEffect")
     if (navigator.geolocation) {
         navigator.permissions
           .query({ name: "geolocation" })
@@ -170,9 +165,14 @@ export default function Chat() {
    
         if(Array.isArray(data))
        { setchats([...data,...chats])
+        setTimeout(()=>{
+          setlocationLoading(false)
+
+        },2000)
+
        }
-         else{ console.log(data)
-          setchats([data,...chats])
+         else{ 
+          setchats([...[data],...chats])
          }
           
       })
@@ -182,6 +182,8 @@ export default function Chat() {
 
  
     })
+
+    
     
   if(locationLoading)
   return <Fetching_Location/>
@@ -202,9 +204,10 @@ export default function Chat() {
       <div className='flex flex-col h-3/4 w-screen overflow-scroll overflow-x-hidden items-center space-y-6 mt-8'>
        {
            chats.length!=0?(chats.map((e)=>{
-              if(e.message!=null)
+   
+            if(Object.keys(e).length===2)
                return(
-               <div key={e} className='from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg items-start drop-shadow-xl whitespace-pre-wrap p-5' >
+               <div key={Math.random().toString()} className='from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg items-start drop-shadow-xl whitespace-pre-wrap p-5' >
                    <div className='flex flex-row space-x-4'>
                    <div className=' bg-white rounded-full h-11 w-11 overflow-hidden'>
                      <img src={`https://avatars.dicebear.com/api/avataaars/${e.userName}.svg`}/>
@@ -220,7 +223,7 @@ export default function Chat() {
                )
 
                return(
-                <div key={e.path} className='flex flex-col from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg drop-shadow-xl whitespace-pre-wrap p-5 ' >
+                <div key={Math.random().toString()} className='flex flex-col from-purple-600 to-pink-400 bg-gradient-to-r w-1/2 rounded-lg drop-shadow-xl whitespace-pre-wrap p-5 ' >
                      <div className='flex flex-row space-x-4'>
                    <div className=' bg-white rounded-full h-11 w-11 overflow-hidden'>
                      <img src={`https://avatars.dicebear.com/api/avataaars/${e.userName}.svg`}/>
