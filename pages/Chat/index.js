@@ -13,6 +13,7 @@ import Router from 'next/router'
 import Fetching_Location from '../../components/Fetching_Location';
 import Allow_Location_Prompt from '../../components/Allow_Location_Prompt';
 import FileUploaad_Progress from '../../components/FileUploaad_Progress';
+import ConnectionTimedOut from '../../components/ConnectionTimedOut';
 
 const ServerURL = "https://talker-server.herokuapp.com";
 // const ServerURL = "http://localhost:3001";
@@ -30,6 +31,8 @@ export default function Chat() {
     const [UploadPercent, setUploadPercent] = useState(0)
     const [roomName, setroomName] = useState("")
     const [Name, setName] = useState("")
+    const [connectionTimedOut, setconnectionTimedOut] = useState(false)
+    const [onlineUsers, setonlineUsers] = useState(0)
 
     const fileInput = useRef();
     
@@ -48,6 +51,8 @@ export default function Chat() {
         setlocation((crd.latitude).toString()+'_'+(crd.longitude).toString())
         setTimeout(function () {
           setlocationPermission(true)
+          // setlocationLoading(false)
+
         }, 2000);
        
        
@@ -164,7 +169,9 @@ export default function Chat() {
       socket.on("chat",data=>{
    
         if(Array.isArray(data))
-       { setchats([...data,...chats])
+       { 
+
+         setchats([...data,...chats])
         setTimeout(()=>{
           setlocationLoading(false)
 
@@ -172,17 +179,24 @@ export default function Chat() {
 
        }
          else{ 
-          setchats([...[data],...chats])
+          setchats([data,...chats])
          }
           
       })
       socket.on("roomName",roomName=>{
          setroomName(roomName)
       })
+      socket.on("disconnect",()=>{
+       setconnectionTimedOut(true)
+      })
+      socket.on("onlineUsers",(data)=>{
+       setonlineUsers(data)
+      })
 
  
     })
 
+  
     
     
   if(locationLoading)
@@ -195,13 +209,19 @@ export default function Chat() {
   
   </div>
   )
+  if(connectionTimedOut)
+  return <ConnectionTimedOut/>
 
   
   return (
     <div className='flex flex-col items-center h-[37rem] justify-between'>
-      
-      
-      <div className='flex flex-col h-3/4 w-screen overflow-scroll overflow-x-hidden items-center space-y-6 mt-8'>
+
+      <div className='flex flex-row justify-center items-center space-x-2 mt-6'>
+      <div className=' text-sm'>{onlineUsers} online</div>
+      <div className='h-2 w-2 rounded-full bg-green-500'></div>
+      </div>
+
+      <div className='flex flex-col h-3/4 w-screen overflow-scroll overflow-x-hidden items-center space-y-6'>
        {
            chats.length!=0?(chats.map((e)=>{
    
