@@ -33,6 +33,7 @@ export default function Chat() {
     const [Name, setName] = useState("")
     const [connectionTimedOut, setconnectionTimedOut] = useState(false)
     const [onlineUsers, setonlineUsers] = useState(0)
+    const [typing, settyping] = useState('')
 
     const fileInput = useRef();
     
@@ -192,6 +193,12 @@ export default function Chat() {
       socket.on("onlineUsers",(data)=>{
        setonlineUsers(data)
       })
+      socket.on("typing",(userName)=>{
+        settyping(userName)
+        setTimeout(()=>{
+          settyping('')
+        },4000)
+      })
 
  
     })
@@ -214,12 +221,15 @@ export default function Chat() {
 
   
   return (
-    <div className='flex flex-col items-center h-[37rem] justify-between'>
+    <div className='flex flex-col items-center h-[37rem] justify-between space-y-4'>
 
-      <div className='flex flex-row justify-center items-center space-x-2 mt-6'>
+      <div className='flex flex-row justify-center items-center space-x-2 mt-4'>
       <div className=' text-sm'>{onlineUsers} online</div>
       <div className='h-2 w-2 rounded-full bg-green-500'></div>
+      <div className=' opacity-20 text-sm'>{roomName}</div>
       </div>
+
+      {typing!=''?(<div className='h-3 opacity-40 text-xs'>{typing} is typing...</div>):(<div className=' h-3 w-screen'></div>)}
 
       <div className='flex flex-col h-3/4 w-screen overflow-scroll overflow-x-hidden items-center space-y-6'>
        {
@@ -288,6 +298,12 @@ export default function Chat() {
       <textarea placeholder='Write your message' className='border-solid border-2 border-indigo-600 w-auto rounded-full px-7 py-2' type='text' value={message} onChange={(e)=>{
       
           setmessage(e.target.value)
+          if(e.target.value.length%2===0)
+          {setTimeout(()=>{
+            socket.emit("typing",{userName:Name})
+
+          },500)
+        }
       
       }}/>
         <div className='mt-5' >
@@ -313,7 +329,7 @@ export default function Chat() {
      <input className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 my-3'  type="file"
        ref={fileInput} style={{ "display": "none" }}
           onChange={(e) => {setfile(e.target.files[0])
-       
+           
           }}/>
 
       </div>
