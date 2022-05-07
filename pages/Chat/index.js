@@ -156,8 +156,11 @@ export default function Chat() {
       }
       if(location!=''){
       socket.emit("join",{location:location})
+      }else{
+       setlocationLoading(false)
+       setlocationPermission(false)
       }
-      
+  
   }, [location])
   useEffect(() => {
     console.log('harsh is genius')
