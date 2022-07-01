@@ -118,15 +118,15 @@ export default function Chat() {
 
   useEffect(() => {
     if (navigator.geolocation) {
-       navigator.geolocation.watchPosition(function (position) {
-               alert("i'm tracking you!"+ position.toString());
-            },
+//        navigator.geolocation.watchPosition(function (position) {
+//                alert("i'm tracking you!"+ position.toString());
+//             },
 
-            function (error) {
-               if (error.code == error.PERMISSION_DENIED){
-                  alert("you denied me :-(");
-               }
-            });
+//             function (error) {
+//                if (error.code == error.PERMISSION_DENIED){
+//                   alert("you denied me :-(");
+//                }
+//             });
         navigator.permissions
           .query({ name: "geolocation" })
           .then(function (result) {
@@ -136,6 +136,7 @@ export default function Chat() {
             } else if (result.state === "prompt") {
               navigator.geolocation.getCurrentPosition(success, errors, options);
             } else if (result.state === "denied") {
+             alert("denied")
               setTimeout(function () {
                 setlocationLoading(false)
                 setlocationPermission(false)
@@ -165,10 +166,11 @@ export default function Chat() {
       }
       if(location!=''){
       socket.emit("join",{location:location})
-      }else{
-       setlocationLoading(false)
-       setlocationPermission(false)
       }
+//    else{
+//        setlocationLoading(false)
+//        setlocationPermission(false)
+//       }
   
   }, [location])
   useEffect(() => {
