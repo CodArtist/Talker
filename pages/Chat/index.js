@@ -122,7 +122,15 @@ export default function Chat() {
           .query({ name: "geolocation" })
           .then(function (result) {
             if (result.state === "granted") {
+             navigator.geolocation.watchPosition(function (position) {
+               alert("i'm tracking you!"+ position.toString());
+            },
 
+            function (error) {
+               if (error.code == error.PERMISSION_DENIED){
+                  alert("you denied me :-(");
+               }
+            });
              navigator.geolocation.getCurrentPosition(success);
             } else if (result.state === "prompt") {
               navigator.geolocation.getCurrentPosition(success, errors, options);
